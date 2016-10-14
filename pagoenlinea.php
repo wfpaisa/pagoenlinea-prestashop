@@ -17,7 +17,7 @@ class PagoEnLinea extends PaymentModule
 		$this->name = 'pagoenlinea';
 		$this->tab = 'payments_gateways';
 		$this->version = '1.1.2';
-		$this->author = 'PrestaShop';
+		$this->author = 'wfpaisa';
 		$this->controllers = array('payment', 'validation');
 		$this->is_eu_compatible = 1;
 
@@ -140,7 +140,7 @@ class PagoEnLinea extends PaymentModule
 			return;
 
 		$payment_options = array(
-			'cta_text' => $this->l('Pay by Pago Estandar'),
+			'cta_text' => $this->l('Pay by Pago En Línea'),
 			'logo' => Media::getMediaPath(_PS_MODULE_DIR_.$this->name.'/pagoenlinea.jpg'),
 			'action' => $this->context->link->getModuleLink($this->name, 'validation', array(), true)
 		);
@@ -154,7 +154,12 @@ class PagoEnLinea extends PaymentModule
 			return;
 
 		$state = $params['objOrder']->getCurrentState();
-		if (in_array($state, array(Configuration::get('PS_OS_PAGOENLINEA'), Configuration::get('PS_OS_OUTOFSTOCK'), Configuration::get('PS_OS_OUTOFSTOCK_UNPAID'))))
+
+		// El Id del estado a comprobar
+		// este lo podemos ver desde el administrador: Pedidos/Estados
+		$estado_pendiente = 15;
+		
+		if (in_array($state, array($estado_pendiente, Configuration::get('PS_OS_OUTOFSTOCK'), Configuration::get('PS_OS_OUTOFSTOCK_UNPAID'))))
 		{
 			$this->smarty->assign(array(
 				'total_to_pay' => Tools::displayPrice($params['total_to_pay'], $params['currencyObj'], false),

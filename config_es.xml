@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <module>
 	<name>pagoenlinea</name>
-	<displayName><![CDATA[Pago en línea]]></displayName>
+	<displayName><![CDATA[Pago en l&iacute;nea]]></displayName>
 	<version><![CDATA[1.1.2]]></version>
-	<description><![CDATA[Aceptar pagos para sus productos a trav&eacute;s de pago en línea.]]></description>
-	<author><![CDATA[PrestaShop]]></author>
+	<description><![CDATA[Aceptar pagos por sus productos a trav&eacute;s pago l&iacute;nea.]]></description>
+	<author><![CDATA[wfpaisa]]></author>
 	<tab><![CDATA[payments_gateways]]></tab>
 	<confirmUninstall><![CDATA[¿Está seguro de querer borrar estos detalles?]]></confirmUninstall>
 	<is_configurable>1</is_configurable>

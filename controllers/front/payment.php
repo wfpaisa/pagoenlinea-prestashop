@@ -2,7 +2,7 @@
 /**
  * @since 1.5.0
  */
-class PagoestandarPaymentModuleFrontController extends ModuleFrontController
+class PagoenlineaPaymentModuleFrontController extends ModuleFrontController
 {
 	public $ssl = true;
 	public $display_column_left = false;
