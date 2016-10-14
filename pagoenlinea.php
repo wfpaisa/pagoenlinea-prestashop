@@ -1,33 +1,9 @@
 <?php
-/*
-* 2007-2016 PrestaShop
-*
-* NOTICE OF LICENSE
-*
-* This source file is subject to the Academic Free License (AFL 3.0)
-* that is bundled with this package in the file LICENSE.txt.
-* It is also available through the world-wide-web at this URL:
-* http://opensource.org/licenses/afl-3.0.php
-* If you did not receive a copy of the license and are unable to
-* obtain it through the world-wide-web, please send an email
-* to license@prestashop.com so we can send you a copy immediately.
-*
-* DISCLAIMER
-*
-* Do not edit or add to this file if you wish to upgrade PrestaShop to newer
-* versions in the future. If you wish to customize PrestaShop for your
-* needs please refer to http://www.prestashop.com for more information.
-*
-*  @author PrestaShop SA <contact@prestashop.com>
-*  @copyright  2007-2016 PrestaShop SA
-*  @license    http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
-*  International Registered Trademark & Property of PrestaShop SA
-*/
 
 if (!defined('_PS_VERSION_'))
 	exit;
 
-class BankWire extends PaymentModule
+class PagoEnLinea extends PaymentModule
 {
 	protected $_html = '';
 	protected $_postErrors = array();
@@ -38,7 +14,7 @@ class BankWire extends PaymentModule
 	public $extra_mail_vars;
 	public function __construct()
 	{
-		$this->name = 'bankwire';
+		$this->name = 'pagoenlinea';
 		$this->tab = 'payments_gateways';
 		$this->version = '1.1.2';
 		$this->author = 'PrestaShop';
@@ -48,19 +24,19 @@ class BankWire extends PaymentModule
 		$this->currencies = true;
 		$this->currencies_mode = 'checkbox';
 
-		$config = Configuration::getMultiple(array('BANK_WIRE_DETAILS', 'BANK_WIRE_OWNER', 'BANK_WIRE_ADDRESS'));
-		if (!empty($config['BANK_WIRE_OWNER']))
-			$this->owner = $config['BANK_WIRE_OWNER'];
-		if (!empty($config['BANK_WIRE_DETAILS']))
-			$this->details = $config['BANK_WIRE_DETAILS'];
-		if (!empty($config['BANK_WIRE_ADDRESS']))
-			$this->address = $config['BANK_WIRE_ADDRESS'];
+		$config = Configuration::getMultiple(array('PAGO_EN_LINEA_DETAILS', 'PAGO_EN_LINEA_OWNER', 'PAGO_EN_LINEA_ADDRESS'));
+		if (!empty($config['PAGO_EN_LINEA_OWNER']))
+			$this->owner = $config['PAGO_EN_LINEA_OWNER'];
+		if (!empty($config['PAGO_EN_LINEA_DETAILS']))
+			$this->details = $config['PAGO_EN_LINEA_DETAILS'];
+		if (!empty($config['PAGO_EN_LINEA_ADDRESS']))
+			$this->address = $config['PAGO_EN_LINEA_ADDRESS'];
 
 		$this->bootstrap = true;
 		parent::__construct();
 
-		$this->displayName = $this->l('Bank wire');
-		$this->description = $this->l('Accept payments for your products via bank wire transfer.');
+		$this->displayName = $this->l('Pago en línea');
+		$this->description = $this->l('Accept payments for your products via pago en linea transfer.');
 		$this->confirmUninstall = $this->l('Are you sure about removing these details?');
 		$this->ps_versions_compliancy = array('min' => '1.6', 'max' => '1.6.99.99');
 
@@ -70,9 +46,9 @@ class BankWire extends PaymentModule
 			$this->warning = $this->l('No currency has been set for this module.');
 
 		$this->extra_mail_vars = array(
-										'{bankwire_owner}' => Configuration::get('BANK_WIRE_OWNER'),
-										'{bankwire_details}' => nl2br(Configuration::get('BANK_WIRE_DETAILS')),
-										'{bankwire_address}' => nl2br(Configuration::get('BANK_WIRE_ADDRESS'))
+										'{pagoenlinea_owner}' => Configuration::get('PAGO_EN_LINEA_OWNER'),
+										'{pagoenlinea_details}' => nl2br(Configuration::get('PAGO_EN_LINEA_DETAILS')),
+										'{pagoenlinea_address}' => nl2br(Configuration::get('PAGO_EN_LINEA_ADDRESS'))
 										);
 	}
 
@@ -85,9 +61,9 @@ class BankWire extends PaymentModule
 
 	public function uninstall()
 	{
-		if (!Configuration::deleteByName('BANK_WIRE_DETAILS')
-				|| !Configuration::deleteByName('BANK_WIRE_OWNER')
-				|| !Configuration::deleteByName('BANK_WIRE_ADDRESS')
+		if (!Configuration::deleteByName('PAGO_EN_LINEA_DETAILS')
+				|| !Configuration::deleteByName('PAGO_EN_LINEA_OWNER')
+				|| !Configuration::deleteByName('PAGO_EN_LINEA_ADDRESS')
 				|| !parent::uninstall())
 			return false;
 		return true;
@@ -97,9 +73,9 @@ class BankWire extends PaymentModule
 	{
 		if (Tools::isSubmit('btnSubmit'))
 		{
-			if (!Tools::getValue('BANK_WIRE_DETAILS'))
+			if (!Tools::getValue('PAGO_EN_LINEA_DETAILS'))
 				$this->_postErrors[] = $this->l('Account details are required.');
-			elseif (!Tools::getValue('BANK_WIRE_OWNER'))
+			elseif (!Tools::getValue('PAGO_EN_LINEA_OWNER'))
 				$this->_postErrors[] = $this->l('Account owner is required.');
 		}
 	}
@@ -108,14 +84,14 @@ class BankWire extends PaymentModule
 	{
 		if (Tools::isSubmit('btnSubmit'))
 		{
-			Configuration::updateValue('BANK_WIRE_DETAILS', Tools::getValue('BANK_WIRE_DETAILS'));
-			Configuration::updateValue('BANK_WIRE_OWNER', Tools::getValue('BANK_WIRE_OWNER'));
-			Configuration::updateValue('BANK_WIRE_ADDRESS', Tools::getValue('BANK_WIRE_ADDRESS'));
+			Configuration::updateValue('PAGO_EN_LINEA_DETAILS', Tools::getValue('PAGO_EN_LINEA_DETAILS'));
+			Configuration::updateValue('PAGO_EN_LINEA_OWNER', Tools::getValue('PAGO_EN_LINEA_OWNER'));
+			Configuration::updateValue('PAGO_EN_LINEA_ADDRESS', Tools::getValue('PAGO_EN_LINEA_ADDRESS'));
 		}
 		$this->_html .= $this->displayConfirmation($this->l('Settings updated'));
 	}
 
-	protected function _displayBankWire()
+	protected function _displayPagoEnLinea()
 	{
 		return $this->display(__FILE__, 'infos.tpl');
 	}
@@ -134,7 +110,7 @@ class BankWire extends PaymentModule
 		else
 			$this->_html .= '<br />';
 
-		$this->_html .= $this->_displayBankWire();
+		$this->_html .= $this->_displayPagoEnLinea();
 		$this->_html .= $this->renderForm();
 
 		return $this->_html;
@@ -164,8 +140,8 @@ class BankWire extends PaymentModule
 			return;
 
 		$payment_options = array(
-			'cta_text' => $this->l('Pay by Bank Wire'),
-			'logo' => Media::getMediaPath(_PS_MODULE_DIR_.$this->name.'/bankwire.jpg'),
+			'cta_text' => $this->l('Pay by Pago Estandar'),
+			'logo' => Media::getMediaPath(_PS_MODULE_DIR_.$this->name.'/pagoenlinea.jpg'),
 			'action' => $this->context->link->getModuleLink($this->name, 'validation', array(), true)
 		);
 
@@ -178,13 +154,13 @@ class BankWire extends PaymentModule
 			return;
 
 		$state = $params['objOrder']->getCurrentState();
-		if (in_array($state, array(Configuration::get('PS_OS_BANKWIRE'), Configuration::get('PS_OS_OUTOFSTOCK'), Configuration::get('PS_OS_OUTOFSTOCK_UNPAID'))))
+		if (in_array($state, array(Configuration::get('PS_OS_PAGOENLINEA'), Configuration::get('PS_OS_OUTOFSTOCK'), Configuration::get('PS_OS_OUTOFSTOCK_UNPAID'))))
 		{
 			$this->smarty->assign(array(
 				'total_to_pay' => Tools::displayPrice($params['total_to_pay'], $params['currencyObj'], false),
-				'bankwireDetails' => Tools::nl2br($this->details),
-				'bankwireAddress' => Tools::nl2br($this->address),
-				'bankwireOwner' => $this->owner,
+				'pagoenlineaDetails' => Tools::nl2br($this->details),
+				'pagoenlineaAddress' => Tools::nl2br($this->address),
+				'pagoenlineaOwner' => $this->owner,
 				'status' => 'ok',
 				'id_order' => $params['objOrder']->id
 			));
@@ -220,20 +196,20 @@ class BankWire extends PaymentModule
 					array(
 						'type' => 'text',
 						'label' => $this->l('Account owner'),
-						'name' => 'BANK_WIRE_OWNER',
+						'name' => 'PAGO_EN_LINEA_OWNER',
 						'required' => true
 					),
 					array(
 						'type' => 'textarea',
 						'label' => $this->l('Details'),
-						'name' => 'BANK_WIRE_DETAILS',
+						'name' => 'PAGO_EN_LINEA_DETAILS',
 						'desc' => $this->l('Such as bank branch, IBAN number, BIC, etc.'),
 						'required' => true
 					),
 					array(
 						'type' => 'textarea',
 						'label' => $this->l('Bank address'),
-						'name' => 'BANK_WIRE_ADDRESS',
+						'name' => 'PAGO_EN_LINEA_ADDRESS',
 						'required' => true
 					),
 				),
@@ -267,9 +243,9 @@ class BankWire extends PaymentModule
 	public function getConfigFieldsValues()
 	{
 		return array(
-			'BANK_WIRE_DETAILS' => Tools::getValue('BANK_WIRE_DETAILS', Configuration::get('BANK_WIRE_DETAILS')),
-			'BANK_WIRE_OWNER' => Tools::getValue('BANK_WIRE_OWNER', Configuration::get('BANK_WIRE_OWNER')),
-			'BANK_WIRE_ADDRESS' => Tools::getValue('BANK_WIRE_ADDRESS', Configuration::get('BANK_WIRE_ADDRESS')),
+			'PAGO_EN_LINEA_DETAILS' => Tools::getValue('PAGO_EN_LINEA_DETAILS', Configuration::get('PAGO_EN_LINEA_DETAILS')),
+			'PAGO_EN_LINEA_OWNER' => Tools::getValue('PAGO_EN_LINEA_OWNER', Configuration::get('PAGO_EN_LINEA_OWNER')),
+			'PAGO_EN_LINEA_ADDRESS' => Tools::getValue('PAGO_EN_LINEA_ADDRESS', Configuration::get('PAGO_EN_LINEA_ADDRESS')),
 		);
 	}
 }
